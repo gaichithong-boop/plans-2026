@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <a href="#" class="nav-link active">Dashboard</a>
+            <a href="#study" class="nav-link">Study</a>
+            <a href="#fitness" class="nav-link">Fitness</a>
+            <a href="#nutrition" class="nav-link">Nutrition</a>
+            <a href="#money" class="nav-link">Money</a>
+        </nav>
+
+      <!-- DASHBOARD PAGE -->
+<div class="page active-page" id="dashboard-page">
+
+    <header class="header">
+        <div>
+            <p class="eyebrow">YOUR LOCK-IN JOURNEY</p>
+            <h1>Plans 2026</h1>
+            <p class="subtitle">Small steps. Every day. Until November 13.</p>
+        </div>
+
+        <div class="countdown-card">
+            <span>COUNTDOWN</span>
+            <strong id="countdown">Loading...</strong>
+            <small>November 13, 2026</small>
+        </div>
+    </header>
+
+    <!-- Daily Progress Bar -->
+    <div class="daily-progress">
+        <div class="progress-header">
+            <div>
+                <p class="eyebrow">TODAY</p>
+                <h2>Daily progress</h2>
+            </div>
+            <strong id="dailyProgressText">0%</strong>
+        </div>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="dailyProgressFill"></div>
+        </div>
+
+        <p class="progress-subtext" id="dailyProgressSubtext">
+            0 of 3 tasks completed
+        </p>
+    </div>
+
+    <!-- Tasks Container -->
+    <div class="tasks" id="dailyTasks" style="margin-bottom: 28px;">
+
+        <!-- Past-Year Paper 1 -->
+        <div class="task-card" data-task="paper1">
+            <div class="task-icon study">📚</div>
+            <div class="task-info">
+                <h3>Past-Year Paper 1</h3>
+                <p>5:00 PM – 6:30 PM · Choose subject</p>
+            </div>
+            <div class="task-actions">
+                <button class="start-button">Start</button>
+                <button class="complete-button">✓</button>
+            </div>
+        </div>
+
+        <!-- Past-Year Paper 2 -->
+        <div class="task-card" data-task="paper2">
+            <div class="task-icon study">📖</div>
+            <div class="task-info">
+                <h3>Past-Year Paper 2</h3>
+                <p>7:00 PM – 8:30 PM · Choose subject</p>
+            </div>
+            <div class="task-actions">
+                <button class="start-button">Start</button>
+                <button class="complete-button">✓</button>
+            </div>
+        </div>
+
+        <!-- Daily Aerobic -->
+        <div class="task-card" data-task="aerobic">
+            <div class="task-icon fitness">🏃</div>
+            <div class="task-info">
+                <h3>Daily Aerobic</h3>
+                <p id="aerobicDescription">20–30 min · Choose activity</p>
+            </div>
+            <div class="task-actions">
+                <button class="start-button">Start</button>
+                <button class="complete-button">✓</button>
+            </div>
+        </div>
+
+        <!-- Gym -->
+        <div class="task-card gym-task" data-task="gym">
+            <div class="task-icon fitness">🏋️</div>
+            <div class="task-info">
+                <h3>Gym</h3>
+                <p id="gymDescription">Today's workout</p>
+            </div>
+            <div class="task-actions">
+                <button class="start-button">Start</button>
+                <button class="complete-button">✓</button>
+            </div>
+        </div>
+
+    </div> <!-- /#dailyTasks -->
+
+   <!-- Progress Cards Section -->
+<section class="progress-section" style="margin-top: 28px;">
+    <!-- Fitness Card -->
+    <div class="progress-card">
+        <div class="progress-top">
+            <span>🏋️ Fitness</span>
+            <strong id="fitnessProgressText">0%</strong>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="fitnessProgressFill" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <!-- Study Card -->
+    <div class="progress-card">
+        <div class="progress-top">
+            <span>📚 Study</span>
+            <strong id="studyProgressText">0%</strong>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="studyProgressFill" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <!-- Money Card -->
+    <div class="progress-card">
+        <div class="progress-top">
+            <span>💰 Money</span>
+            <strong>43%</strong>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill money" style="width: 43%;"></div>
+        </div>
+        <small>RM320 / RM750 · Save RM40/week</small>
+    </div>
+</section>
+
+ <!-- Bottom Info Cards (Only inside Dashboard) -->
+<section id="dashboardBottomGrid" class="bottom-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 24px;">
+    <div class="info-card">
+        <span class="card-label">🥗 NUTRITION</span>
+        <h2>Daily balance</h2>
+        <p>Keep track of the foods and nutrients you had today.</p>
+        <button>Open nutrition →</button>
+    </div>
+
+    <div class="info-card">
+        <span class="card-label">⚠️ MISSED GOALS</span>
+        <h2>You're all clear</h2>
+        <p>Missed tasks will appear here so you can review them.</p>
+    </div>
+</section>
+
+            <!-- Timer Panel -->
+            <div class="timer-panel" id="timerPanel">
+                <div>
+                    <p class="eyebrow">CURRENT TASK</p>
+                    <h2 id="timerTask">Past-Year Paper</h2>
+                </div>
+
+                <div class="timer-display" id="timerDisplay">60:00</div>
+
+                <div class="timer-buttons">
+                    <button id="pauseTimer">Pause</button>
+                    <button id="finishTimer">Finish</button>
+                </div>
+            </div>
+
+           
+
+        </div> <!-- /#dashboard-page -->
+
+        <!-- STUDY PAGE -->
+        <section class="page" id="study-page">
+            <div class="page-heading">
+                <p class="eyebrow">YOUR STUDY</p>
+                <h1>Past-Year Papers</h1>
+                <p class="subtitle">Build your confidence one paper at a time.</p>
+            </div>
+
+            <div class="study-stats">
+                <div class="study-stat">
+                    <span>PAPERS COMPLETED</span>
+                    <strong id="papersCompleted">0</strong>
+                </div>
+
+                <div class="study-stat">
+                    <span>AVERAGE SCORE</span>
+                    <strong id="averageScore">—</strong>
+                </div>
+
+                <div class="study-stat">
+                    <span>80+ SCORES</span>
+                    <strong id="scoresAbove80">0</strong>
+                </div>
+            </div>
+
+            <div class="study-form">
+                <h2>Add past-year paper</h2>
+                <div class="form-grid">
+                    <label>
+                        Subject
+                        <select id="paperSubject">
+                            <option>Biology</option>
+                            <option>Chemistry</option>
+                            <option>Physics</option>
+                            <option>Mathematics</option>
+                            <option>Additional Mathematics</option>
+                            <option>English</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Date
+                        <input type="date" id="paperDate">
+                    </label>
+
+                    <label>
+                        Score
+                        <input type="number" id="paperScore" min="0" max="100" placeholder="e.g. 84">
+                    </label>
+                </div>
+
+                <button class="save-paper" id="savePaper">Save paper</button>
+            </div>
+
+          <div class="paper-history">
+                <div class="section-heading" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <p class="eyebrow">HISTORY</p>
+                        <h2>Your papers</h2>
+                    </div>
+                    <!-- Clear All History Button -->
+                    <button type="button" id="clearPaperHistory" class="clear-history-btn" style="background: transparent; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">
+                        🗑️ Clear History
+                    </button>
+                </div>
+
+                <div id="paperList">
+                    <p class="empty-message">No papers recorded yet.</p>
+                    
+                    <!-- Example of how individual items dynamically rendered by JS should include a delete button -->
+                    <!-- 
+                    <div class="paper-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee;">
+                        <div>
+                            <strong>Biology</strong> - 85% <small>(12 Aug 2026)</small>
+                        </div>
+                        <button class="delete-single-paper" data-id="1" style="background: none; border: none; color: #a09890; cursor: pointer; font-size: 16px;">✕</button>
+                    </div> 
+                    -->
+                </div>
+            </div>
+              <!-- Study Panel -->
+            <div class="study-panel" id="studyPanel">
+                <div class="panel-heading">
+                    <p class="eyebrow">PAST-YEAR PAPERS</p>
+                    <h2>Today's papers</h2>
+                </div>
+
+                <div class="paper-selector">
+                    <label>
+                        Paper 1 subject
+                        <select id="paper1Subject">
+                            <option value="">Choose subject</option>
+                            <option>Biology</option>
+                            <option>Chemistry</option>
+                            <option>Physics</option>
+                            <option>Mathematics</option>
+                            <option>Add Maths</option>
+                            <option>English</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Paper 2 subject
+                        <select id="paper2Subject">
+                            <option value="">Choose subject</option>
+                            <option>Biology</option>
+                            <option>Chemistry</option>
+                            <option>Physics</option>
+                            <option>Mathematics</option>
+                            <option>Add Maths</option>
+                            <option>English</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- WORKOUT PAGE -->
+        <section class="page" id="workout-page">
+            <div class="page-heading">
+                <p class="eyebrow">TODAY'S WORKOUT</p>
+                <h1 id="workoutTitle">Push</h1>
+                <p class="subtitle" id="workoutSubtitle">Chest · Shoulders · Triceps</p>
+            </div>
+    <!-- WEEKLY SCHEDULE PLANNER -->
+    <div class="study-form" style="margin-bottom: 24px;">
+        <h2>Weekly Schedule Planner</h2>
+        <p class="subtitle" style="margin-bottom: 20px;">Customise what you train on each day of the week</p>
+
+        <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
+            <label>
+                Monday
+                <select id="day-1" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+            <label>
+                Tuesday
+                <select id="day-2" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+            <label>
+                Wednesday
+                <select id="day-3" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+            <label>
+                Thursday
+                <select id="day-4" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+            <label>
+                Friday
+                <select id="day-5" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+            <label>
+                Saturday
+                <select id="day-6" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+            <label>
+                Sunday
+                <select id="day-0" class="schedule-select">
+                    <option value="push">Push</option>
+                    <option value="pull">Pull</option>
+                    <option value="legs">Legs</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+            <div class="workout-list" id="workoutList">
+                <!-- Exercises will appear here -->
+            </div>
+        <!-- Put this inside your Gym section -->
+<button id="finishGymBtn" class="finish-workout-btn">Finish Workout ✓</button>
+        <!-- Aerobic Panel -->
+            <div class="aerobic-panel" id="aerobicPanel">
+                <div class="panel-heading">
+                    <p class="eyebrow">DAILY AEROBIC</p>
+                    <h2>Move your body</h2>
+                </div>
+
+                <div class="aerobic-options">
+                    <button class="aerobic-option" data-activity="Indoor Cycling">🚴 Indoor Cycling</button>
+                    <button class="aerobic-option" data-activity="Running">🏃 Running</button>
+                    <button class="aerobic-option" data-activity="Badminton">🏸 Badminton</button>
+                    <button class="aerobic-option" data-activity="Rope Skipping">𪡬 Rope Skipping</button>
+                    <button class="aerobic-option" data-activity="Pamela Workout">💃 Pamela Workout</button>
+                </div>
+
+                <div class="aerobic-timer">
+                    <div class="aerobic-timer-display" id="aerobicTimerDisplay">25:00</div>
+                    <div class="aerobic-timer-controls">
+                        <select id="aerobicDuration">
+                            <option value="20">20 min</option>
+                            <option value="25" selected>25 min</option>
+                            <option value="30">30 min</option>
+                        </select>
+                        <button id="startAerobicTimer">Start</button>
+                        <button id="pauseAerobicTimer">Pause</button>
+                        <button id="finishAerobicTimer">Finish</button>
+                    </div>
+                </div>
+
+                <div class="aerobic-manual">
+                    <label>
+                        Activity
+                        <input type="text" id="manualActivity" placeholder="e.g. Swimming">
+                    </label>
+
+                    <label>
+                        Minutes
+                        <input type="number" id="manualDuration" min="1" placeholder="30">
+                    </label>
+
+                    <button id="saveAerobic">Save aerobic</button>
+                </div>
+
+                <p class="aerobic-status" id="aerobicStatus">Nothing recorded today.</p>
+            </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
+
