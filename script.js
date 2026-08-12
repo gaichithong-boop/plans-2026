@@ -155,6 +155,70 @@ const paperScore = document.getElementById("paperScore");
 const paperList = document.getElementById("paperList");
 const clearPaperHistory = document.getElementById("clearPaperHistory"); // Clear all button
 
+// --- PYP CODE BUILDER ---
+const subjectCodes = {
+    "Biology": "0610",
+    "Chemistry": "0620",
+    "Physics": "0625",
+    "Mathematics": "0580",
+    "Additional Mathematics": "0606",
+    "English": "0511"
+};
+
+const subjectPapers = {
+    "Biology": ["21", "22", "23", "41", "42", "43", "61", "62", "63"],
+    "Chemistry": ["21", "22", "23", "41", "42", "43", "61", "62", "63"],
+    "Physics": ["21", "22", "23", "41", "42", "43", "61", "62", "63"],
+    "Mathematics": ["21", "22", "23", "41", "42", "43"],
+    "Additional Mathematics": ["11", "12", "13", "21", "22", "23"],
+    "English": ["11", "12", "13"]
+};
+
+const paperNo = document.getElementById("paperNo");
+const paperSession = document.getElementById("paperSession");
+const paperYear = document.getElementById("paperYear");
+const generatedCode = document.getElementById("generatedCode");
+
+// Fill paper-number options based on chosen subject
+function populatePaperNumbers() {
+    if (!paperNo) return;
+    const subject = paperSubject.value;
+    const nums = subjectPapers[subject] || [];
+    paperNo.innerHTML = `<option value="">Choose paper</option>` +
+        nums.map(n => `<option value="${n}">${n}</option>`).join("");
+}
+
+// Fill year options 2019-2026
+if (paperYear) {
+    let yearOpts = `<option value="">Choose year</option>`;
+    for (let y = 2019; y <= 2026; y++) {
+        const short = String(y).slice(2);
+        yearOpts += `<option value="${short}">${y}</option>`;
+    }
+    paperYear.innerHTML = yearOpts;
+}
+
+// Build the code live as the user picks options
+function updateGeneratedCode() {
+    if (!generatedCode) return;
+    const subject = paperSubject.value;
+    const code = subjectCodes[subject];
+    const no = paperNo && paperNo.value;
+    const session = paperSession && paperSession.value;
+    const year = paperYear && paperYear.value;
+
+    if (code && no && session && year) {
+        generatedCode.textContent = `${code}/${no}/${session}/${year}`;
+    } else {
+        generatedCode.textContent = "—";
+    }
+}
+
+if (paperSubject) paperSubject.addEventListener("change", () => { populatePaperNumbers(); updateGeneratedCode(); });
+if (paperNo) paperNo.addEventListener("change", updateGeneratedCode);
+if (paperSession) paperSession.addEventListener("change", updateGeneratedCode);
+if (paperYear) paperYear.addEventListener("change", updateGeneratedCode);
+
 function savePapers() {
     localStorage.setItem("papers", JSON.stringify(papers));
 }
@@ -204,6 +268,7 @@ function displayPapers() {
         paperCard.innerHTML = `
             <div>
                 <strong>${paper.subject}</strong>
+                ${paper.code ? `<small>${paper.code}</small>` : ""}
                 <small>${paper.date}</small>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -223,13 +288,19 @@ if (savePaper) {
         const subject = paperSubject.value;
         const date = paperDate.value;
         const score = Number(paperScore.value);
+        const code = generatedCode && generatedCode.textContent !== "—" ? generatedCode.textContent : "";
+
+        if (!subject) {
+            alert("Please choose a subject.");
+            return;
+        }
 
         if (!date || paperScore.value === "") {
             alert("Please enter the date and score.");
             return;
         }
 
-        const newPaper = { subject, date, score };
+        const newPaper = { subject, date, score, code };
         papers.push(newPaper);
 
         savePapers();
@@ -237,6 +308,10 @@ if (savePaper) {
 
         paperDate.value = "";
         paperScore.value = "";
+        if (paperNo) paperNo.value = "";
+        if (paperSession) paperSession.value = "";
+        if (paperYear) paperYear.value = "";
+        if (generatedCode) generatedCode.textContent = "—";
     });
 }
 
@@ -676,25 +751,6 @@ if (finishAerobicTimer) {
     });
 }
 
-// PAPER SUBJECT SELECTION VALIDATION
-const paper1Subject = document.getElementById("paper1Subject");
-const paper2Subject = document.getElementById("paper2Subject");
-
-if (paper1Subject && paper2Subject) {
-    paper2Subject.addEventListener("change", () => {
-        if (paper1Subject.value && paper2Subject.value === paper1Subject.value) {
-            alert("Choose a different subject for Paper 2.");
-            paper2Subject.value = "";
-        }
-    });
-
-    paper1Subject.addEventListener("change", () => {
-        if (paper2Subject.value && paper1Subject.value === paper2Subject.value) {
-            alert("Choose a different subject for Paper 1.");
-            paper1Subject.value = "";
-        }
-    });
-}
 // AUTO-LOAD TODAY'S WORKOUT ON INITIAL PAGE LOAD
 (function initFitnessPage() {
     const currentDay = new Date().getDay();
