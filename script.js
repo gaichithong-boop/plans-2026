@@ -883,3 +883,38 @@ document.addEventListener('click', () => {
 
 // Run automatically every time you open or refresh the site
 loadAndCheckDailyReset();
+
+// --- MISSED GOALS: show yesterday's unfinished main tasks ---
+const MAIN_TASKS = [
+    { key: "gym", label: "Gym" },
+    { key: "aerobic", label: "Aerobic" },
+    { key: "paper1", label: "Past-Year Paper 1" },
+    { key: "paper2", label: "Past-Year Paper 2" }
+];
+
+function updateMissedGoals() {
+    const titleElem = document.getElementById("missedGoalsTitle");
+    const textElem = document.getElementById("missedGoalsText");
+    if (!titleElem || !textElem) return;
+
+    // Work out yesterday's date string (YYYY-MM-DD)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yKey = yesterday.toISOString().split("T")[0];
+
+    const yesterdayDone = JSON.parse(localStorage.getItem("completedTasks")) || {};
+    const doneList = yesterdayDone[yKey] || [];
+
+    const missed = MAIN_TASKS.filter(t => !doneList.includes(t.key));
+
+    if (missed.length === 0) {
+        titleElem.textContent = "You're all clear";
+        textElem.textContent = "No goals missed yesterday. Nice work!";
+    } else {
+        const labels = missed.map(t => t.label).join(", ");
+        titleElem.textContent = `⚠️ Missed ${missed.length} yesterday`;
+        textElem.textContent = `You didn't complete: ${labels}.`;
+    }
+}
+
+updateMissedGoals();
