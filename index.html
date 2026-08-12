@@ -430,9 +430,64 @@
 
                 <p class="aerobic-status" id="aerobicStatus">Nothing recorded today.</p>
             </div>
+        </section>
 
+        <!-- NUTRITION PAGE -->
+        <section class="page" id="nutrition-page">
+            <div class="page-heading">
+                <p class="eyebrow">YOUR NUTRITION</p>
+                <h1>Today's balance</h1>
+                <p class="subtitle">Small wins, every day.</p>
+            </div>
+
+            <!-- Water -->
+            <div class="study-form" style="margin-bottom: 24px;">
+                <h2>Water 💧</h2>
+                <p class="subtitle" style="margin-bottom: 18px;">Goal: 2000ml (1000ml × 2). Tap a bottle to fill it.</p>
+                <div id="waterBottles" style="display: flex; gap: 16px; margin-bottom: 12px;">
+                    <button class="bottle" data-index="0" type="button" aria-label="Bottle 1">🥛</button>
+                    <button class="bottle" data-index="1" type="button" aria-label="Bottle 2">🥛</button>
+                </div>
+                <p id="waterStatus" class="subtitle">0 / 2000ml</p>
+            </div>
+
+            <!-- Nutrients -->
+            <div class="study-form" style="margin-bottom: 24px;">
+                <h2>Nutrients 🥗</h2>
+                <p class="subtitle" style="margin-bottom: 18px;">No targets — just tick what you've had today.</p>
+                <div id="nutrientsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
+                    <!-- buttons injected by JS -->
+                </div>
+                <p id="nutrientsStatus" class="subtitle" style="margin-top: 14px;">0 of 7 covered</p>
+            </div>
+
+            <!-- Snacks / Treats -->
+            <div class="study-form" style="margin-bottom: 24px;">
+                <h2>Snacks &amp; treats 🍫</h2>
+                <p class="subtitle" style="margin-bottom: 14px;">Enjoy, just keep it mindful 🌿</p>
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <input type="text" id="snackInput" placeholder="e.g. 烤鱼, McD, 巧克力" style="flex: 1; border: 1px solid #e8e0db; background: #faf7f4; padding: 11px; border-radius: 10px; color: #514944; font-size: 14px;">
+                    <button type="button" id="addSnack" class="save-paper">Save</button>
+                </div>
+                <div id="snacksList"></div>
+            </div>
+
+            <!-- History -->
+            <div class="paper-history">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">HISTORY</p>
+                        <h2>Last 30 days</h2>
+                    </div>
+                </div>
+                <div id="nutritionHistory">
+                    <p class="empty-message">No history yet — start drinking water and ticking nutrients!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <script src="script.js"></script>
 </body>
 </html>
-

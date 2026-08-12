@@ -130,15 +130,17 @@ navLinks.forEach(link => {
             document.getElementById("study-page")?.classList.add("active-page");
         } else if (target === "fitness") {
             document.getElementById("workout-page")?.classList.add("active-page");
-            
+
             // Check what day of the week today is and load that workout!
             const currentDay = new Date().getDay();
             let todayWorkout = gymSchedule[currentDay] || "push";
-            
+
             // If today is set to rest, show 'push' as the view default
             if (todayWorkout === "rest") todayWorkout = "push";
-            
+
             showWorkout(todayWorkout);
+        } else if (target === "nutrition") {
+            document.getElementById("nutrition-page")?.classList.add("active-page");
         } else {
             document.getElementById("dashboard-page")?.classList.add("active-page");
             history.replaceState(null, "", location.pathname);
@@ -918,3 +920,201 @@ function updateMissedGoals() {
 }
 
 updateMissedGoals();
+
+
+// =========================================
+// NUTRITION MODULE
+// =========================================
+const NUTRIENT_LIST = [
+    { key: "protein", label: "Protein", icon: "🥩" },
+    { key: "carbs", label: "Carbs", icon: "🍞" },
+    { key: "fat", label: "Fat", icon: "🥑" },
+    { key: "fibre", label: "Fibre", icon: "🌾" },
+    { key: "vitc", label: "Vitamin C", icon: "🍊" },
+    { key: "calcium", label: "Calcium", icon: "🥛" },
+    { key: "iron", label: "Iron", icon: "🥬" }
+];
+
+const FOOD_HISTORY_KEY = "nutritionHistory";
+const WATER_TODAY_KEY = "waterToday";
+const NUTRIENTS_TODAY_KEY = "nutrientsToday";
+const SNACKS_TODAY_KEY = "snacksToday";
+const LAST_NUTRITION_DATE_KEY = "lastNutritionDate";
+
+function nutritionTodayKey() {
+    return new Date().toISOString().split("T")[0];
+}
+
+function ensureTodayKey() {
+    const todayKeyStr = nutritionTodayKey();
+    const lastDate = localStorage.getItem(LAST_NUTRITION_DATE_KEY);
+
+    if (lastDate !== todayKeyStr) {
+        if (lastDate) {
+            archiveYesterday(lastDate);
+        }
+        localStorage.setItem(WATER_TODAY_KEY, JSON.stringify([0, 0]));
+        localStorage.setItem(NUTRIENTS_TODAY_KEY, JSON.stringify([]));
+        localStorage.setItem(SNACKS_TODAY_KEY, JSON.stringify([]));
+        localStorage.setItem(LAST_NUTRITION_DATE_KEY, todayKeyStr);
+    }
+}
+
+function archiveYesterday(dateKey) {
+    const history = JSON.parse(localStorage.getItem(FOOD_HISTORY_KEY)) || {};
+    if (history[dateKey]) return;
+
+    const water = JSON.parse(localStorage.getItem(WATER_TODAY_KEY)) || [0, 0];
+    const nutrients = JSON.parse(localStorage.getItem(NUTRIENTS_TODAY_KEY)) || [];
+    const snacks = JSON.parse(localStorage.getItem(SNACKS_TODAY_KEY)) || [];
+
+    history[dateKey] = {
+        water: water.reduce((a, b) => a + b, 0),
+        nutrients: nutrients,
+        snacks: snacks
+    };
+
+    const keys = Object.keys(history).sort();
+    while (keys.length > 30) {
+        delete history[keys.shift()];
+    }
+    localStorage.setItem(FOOD_HISTORY_KEY, JSON.stringify(history));
+}
+
+// ===== WATER =====
+function renderWater() {
+    const status = document.getElementById("waterStatus");
+    if (!status) return;
+    const filled = JSON.parse(localStorage.getItem(WATER_TODAY_KEY)) || [0, 0];
+    const total = filled.reduce((a, b) => a + b, 0);
+
+    document.querySelectorAll(".bottle").forEach(btn => {
+        const idx = Number(btn.getAttribute("data-index"));
+        if (filled[idx]) btn.classList.add("filled");
+        else btn.classList.remove("filled");
+    });
+
+    if (total >= 2000) {
+        status.textContent = "✓ 2000ml — drink goal reached ✓";
+        status.style.color = "#5a7a5a";
+    } else {
+        status.textContent = total + " / 2000ml";
+        status.style.color = "";
+    }
+}
+
+document.querySelectorAll(".bottle").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-index"));
+        const filled = JSON.parse(localStorage.getItem(WATER_TODAY_KEY)) || [0, 0];
+        filled[idx] = filled[idx] ? 0 : 1000;
+        localStorage.setItem(WATER_TODAY_KEY, JSON.stringify(filled));
+        renderWater();
+    });
+});
+
+// ===== NUTRIENTS =====
+function renderNutrients() {
+    const list = document.getElementById("nutrientsList");
+    const status = document.getElementById("nutrientsStatus");
+    if (!list || !status) return;
+
+    const checked = JSON.parse(localStorage.getItem(NUTRIENTS_TODAY_KEY)) || [];
+    list.innerHTML = NUTRIENT_LIST.map(n => {
+        const isChecked = checked.includes(n.key);
+        return `<button type="button" class="nutrient-btn ${isChecked ? "checked" : ""}" data-key="${n.key}">
+            <span class="nutrient-icon">${n.icon}</span>
+            <span>${n.label}</span>
+        </button>`;
+    }).join("");
+
+    status.textContent = checked.length + " of " + NUTRIENT_LIST.length + " covered";
+    if (checked.length === NUTRIENT_LIST.length) {
+        status.textContent += " ✓ All nutrients covered today!";
+    }
+}
+
+document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".nutrient-btn");
+    if (!btn) return;
+    const key = btn.getAttribute("data-key");
+    const checked = JSON.parse(localStorage.getItem(NUTRIENTS_TODAY_KEY)) || [];
+    const idx = checked.indexOf(key);
+    if (idx === -1) checked.push(key);
+    else checked.splice(idx, 1);
+    localStorage.setItem(NUTRIENTS_TODAY_KEY, JSON.stringify(checked));
+    renderNutrients();
+});
+
+// ===== SNACKS =====
+function renderSnacks() {
+    const list = document.getElementById("snacksList");
+    if (!list) return;
+    const snacks = JSON.parse(localStorage.getItem(SNACKS_TODAY_KEY)) || [];
+    if (snacks.length === 0) {
+        list.innerHTML = `<p class="empty-message">No treats logged today.</p>`;
+        return;
+    }
+    list.innerHTML = snacks.map(s => `<span class="snack-tag">${s}</span>`).join("");
+}
+
+const addSnackBtn = document.getElementById("addSnack");
+if (addSnackBtn) {
+    addSnackBtn.addEventListener("click", () => {
+        const input = document.getElementById("snackInput");
+        const text = input.value.trim();
+        if (!text) return;
+        const snacks = JSON.parse(localStorage.getItem(SNACKS_TODAY_KEY)) || [];
+        snacks.push(text);
+        localStorage.setItem(SNACKS_TODAY_KEY, JSON.stringify(snacks));
+        input.value = "";
+        renderSnacks();
+    });
+}
+
+// ===== HISTORY =====
+function renderNutritionHistory() {
+    const container = document.getElementById("nutritionHistory");
+    if (!container) return;
+
+    const history = JSON.parse(localStorage.getItem(FOOD_HISTORY_KEY)) || {};
+    const keys = Object.keys(history).sort().reverse();
+
+    if (keys.length === 0) {
+        container.innerHTML = `<p class="empty-message">No history yet — start drinking water and ticking nutrients!</p>`;
+        return;
+    }
+
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    container.innerHTML = keys.map(dateKey => {
+        const entry = history[dateKey];
+        const parts = dateKey.split("-");
+        const dateObj = new Date(dateKey);
+        const dayName = dayNames[dateObj.getDay()];
+        const dateLabel = parts[2] + "/" + parts[1] + "/" + parts[0].substring(2);
+
+        const waterDone = entry.water >= 2000;
+        const nutrientCount = NUTRIENT_LIST.length;
+        const nutrientsDone = entry.nutrients.length >= nutrientCount;
+        const snacks = entry.snacks || [];
+
+        const snackLine = snacks.length > 0
+            ? ' <span class="snack-list">· Snacks (' + snacks.length + ') — ' + snacks.join(", ") + '</span>'
+            : "";
+
+        return '<div class="nutri-history-row">' +
+            '<span class="date">' + dateLabel + ' (' + dayName + ')</span>' +
+            ' · ' + entry.water + 'ml water ' + (waterDone ? "✓" : "✗") +
+            ' · ' + entry.nutrients.length + '/' + nutrientCount + ' nutrients ' + (nutrientsDone ? "✓" : "✗") +
+            snackLine +
+            '</div>';
+    }).join("");
+}
+
+// ===== INIT =====
+ensureTodayKey();
+renderWater();
+renderNutrients();
+renderSnacks();
+renderNutritionHistory();

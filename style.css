@@ -816,3 +816,103 @@ h2 {
 .finish-workout-btn:active {
     transform: scale(0.98);
 }
+/* ============================== */
+/* NUTRITION PAGE                */
+/* ============================== */
+
+/* Water bottles */
+.bottle {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    border: 1px solid #e8e0db;
+    background: #faf7f4;
+    font-size: 36px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottle:hover {
+    background: #f2ece7;
+    transform: scale(1.04);
+}
+
+.bottle.filled {
+    background: #e4eee8;
+    border-color: #b9c8b8;
+}
+
+.bottle.filled::after {
+    content: " ✓";
+    font-size: 16px;
+    color: #5a7a5a;
+    margin-left: -6px;
+}
+
+/* Nutrient checkboxes */
+.nutrient-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #e8e0db;
+    background: #faf7f4;
+    color: #665b55;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    text-align: left;
+}
+
+.nutrient-btn:hover {
+    background: #f2ece7;
+}
+
+.nutrient-btn.checked {
+    background: #e4eee8;
+    border-color: #b9c8b8;
+    color: #5a7a5a;
+    font-weight: 600;
+}
+
+.nutrient-icon {
+    font-size: 18px;
+}
+
+/* Snacks list */
+.snack-tag {
+    display: inline-block;
+    background: #f6efe6;
+    border: 1px solid #e8dcc8;
+    color: #8a6e3a;
+    padding: 5px 12px;
+    border-radius: 18px;
+    font-size: 13px;
+    margin: 4px 4px 4px 0;
+}
+
+/* Nutrition history */
+.nutri-history-row {
+    background: #faf7f4;
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #6e645e;
+}
+
+.nutri-history-row .date {
+    font-weight: 600;
+    color: #514944;
+    margin-right: 8px;
+}
+
+.nutri-history-row .snack-list {
+    color: #8a6e3a;
+    font-style: italic;
+}
