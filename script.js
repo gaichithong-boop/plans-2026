@@ -702,125 +702,6 @@ if (paper1Subject && paper2Subject) {
     showWorkout(todayWorkout);
 })();
 
-// FITNESS PAGE AEROBIC CONTROLLER
-(function initFitnessAerobics() {
-    let fitAerobicActivity = null;
-    let fitTimerSeconds = 25 * 60;
-    let fitTimerInterval = null;
-    let fitTimerRunning = false;
-
-    // 1. Quick option buttons selection
-    document.querySelectorAll(".fit-aerobic-option").forEach(button => {
-        button.addEventListener("click", () => {
-            document.querySelectorAll(".fit-aerobic-option").forEach(item => item.classList.remove("selected"));
-            button.classList.add("selected");
-            fitAerobicActivity = button.dataset.activity;
-        });
-    });
-
-    // 2. Log Cardio Session Button
-    const saveBtn = document.getElementById("fitSaveAerobic");
-    if (saveBtn) {
-        saveBtn.addEventListener("click", () => {
-            const manualActivity = document.getElementById("fitManualActivity")?.value.trim();
-            const durationInput = document.getElementById("fitManualDuration")?.value;
-            const duration = Number(durationInput);
-            const activity = manualActivity || fitAerobicActivity;
-
-            if (!activity || !duration) {
-                alert("Please select or type an activity and enter duration in minutes.");
-                return;
-            }
-
-            const statusElem = document.getElementById("fitAerobicStatus");
-            if (statusElem) {
-                statusElem.textContent = `✓ Logged: ${activity} for ${duration} mins`;
-            }
-
-            const aerobicRecord = { date: new Date().toISOString().split("T")[0], activity, duration };
-            localStorage.setItem("aerobicRecord", JSON.stringify(aerobicRecord));
-
-            alert(`Successfully logged ${activity} for ${duration} minutes!`);
-        });
-    }
-
-    // 3. Timer Display Update
-    const timerDisplay = document.getElementById("fitAerobicTimerDisplay");
-    const durationInput = document.getElementById("fitAerobicDuration");
-
-    function updateDisplay() {
-        const minutes = Math.floor(fitTimerSeconds / 60);
-        const seconds = fitTimerSeconds % 60;
-        if (timerDisplay) {
-            timerDisplay.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-        }
-    }
-
-    if (durationInput) {
-        durationInput.addEventListener("input", () => {
-            if (fitTimerRunning) return;
-            fitTimerSeconds = Math.max(1, Number(durationInput.value)) * 60;
-            updateDisplay();
-        });
-    }
-
-    // 4. Timer Controls
-    const startBtn = document.getElementById("fitStartAerobicTimer");
-    const pauseBtn = document.getElementById("fitPauseAerobicTimer");
-    const finishBtn = document.getElementById("fitFinishAerobicTimer");
-
-    if (startBtn) {
-        startBtn.addEventListener("click", () => {
-            if (fitTimerRunning) return;
-
-            const currentActivity = document.getElementById("fitManualActivity")?.value.trim() || fitAerobicActivity;
-
-            if (!currentActivity) {
-                alert("Please pick or type a cardio activity first!");
-                return;
-            }
-
-            fitTimerRunning = true;
-            fitTimerInterval = setInterval(() => {
-                if (fitTimerSeconds > 0) {
-                    fitTimerSeconds--;
-                    updateDisplay();
-                } else {
-                    clearInterval(fitTimerInterval);
-                    fitTimerRunning = false;
-                    alert("Cardio session complete! ♡");
-                }
-            }, 1000);
-        });
-    }
-
-    if (pauseBtn) {
-        pauseBtn.addEventListener("click", () => {
-            if (!fitTimerRunning) return;
-            clearInterval(fitTimerInterval);
-            fitTimerRunning = false;
-        });
-    }
-
-    if (finishBtn) {
-        finishBtn.addEventListener("click", () => {
-            clearInterval(fitTimerInterval);
-            fitTimerRunning = false;
-
-            const duration = Number(durationInput?.value) || 25;
-            const activity = document.getElementById("fitManualActivity")?.value.trim() || fitAerobicActivity || "Cardio";
-
-            const statusElem = document.getElementById("fitAerobicStatus");
-            if (statusElem) {
-                statusElem.textContent = `✓ ${activity} · ${duration} min completed`;
-            }
-
-            fitTimerSeconds = duration * 60;
-            updateDisplay();
-            alert("Session finished!");
-        });
-    }
-})();
 // AUTOMATIC DASHBOARD PROGRESS CALCULATOR
 function updateDashboardProgress() {
     // 1. Calculate Study Progress (Paper 1 & Paper 2)
@@ -861,20 +742,7 @@ function markTaskCompleted(taskName) {
     const taskCard = document.querySelector(`.task-card[data-task="${taskName}"]`);
     if (taskCard) {
         taskCard.classList.add('completed');
-        
-        // Recalculate progress bars automatically
-        if (typeof updateDashboardProgress === 'function') {
-            updateDashboardProgress();
-        }
-    }
-}
 
-// AUTO-CHECK DASHBOARD TASK WHEN FINISHED
-function markTaskCompleted(taskName) {
-    const taskCard = document.querySelector(`.task-card[data-task="${taskName}"]`);
-    if (taskCard) {
-        taskCard.classList.add('completed');
-        
         // Recalculate progress bars automatically
         if (typeof updateDashboardProgress === 'function') {
             updateDashboardProgress();
@@ -920,11 +788,11 @@ function loadAndCheckDailyReset() {
     // If it's a new day (or first run), wipe yesterday's tasks
     if (savedDate !== todayDate) {
         localStorage.setItem('lockin_last_date', todayDate);
-        localStorage.removeItem('lockin_completed_tasks');
+        localStorage.removeItem('completedTasks');
     }
 
     // Load today's saved tasks
-    const completedTasks = JSON.parse(localStorage.getItem('lockin_completed_tasks') || '[]');
+    const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '[]');
     
     document.querySelectorAll('.task-card').forEach(card => {
         const taskKey = card.getAttribute('data-task');
@@ -947,7 +815,7 @@ function saveTodayProgress() {
         const taskKey = card.getAttribute('data-task');
         if (taskKey) completedKeys.push(taskKey);
     });
-    localStorage.setItem('lockin_completed_tasks', JSON.stringify(completedKeys));
+    localStorage.setItem('completedTasks', JSON.stringify(completedKeys));
 }
 
 // 3. Auto-save progress whenever a finish or checkmark button is clicked
