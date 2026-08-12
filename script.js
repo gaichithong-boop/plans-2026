@@ -130,17 +130,16 @@ navLinks.forEach(link => {
             document.getElementById("study-page")?.classList.add("active-page");
         } else if (target === "fitness") {
             document.getElementById("workout-page")?.classList.add("active-page");
-            
-            // Check what day of the week today is and load that workout!
+
             const currentDay = new Date().getDay();
             let todayWorkout = gymSchedule[currentDay] || "push";
-            
-            // If today is set to rest, show 'push' as the view default
+
             if (todayWorkout === "rest") todayWorkout = "push";
-            
+
             showWorkout(todayWorkout);
         } else {
             document.getElementById("dashboard-page")?.classList.add("active-page");
+            history.replaceState(null, "", location.pathname);
         }
     });
 });
@@ -152,7 +151,7 @@ const paperSubject = document.getElementById("paperSubject");
 const paperDate = document.getElementById("paperDate");
 const paperScore = document.getElementById("paperScore");
 const paperList = document.getElementById("paperList");
-const clearPaperHistory = document.getElementById("clearPaperHistory"); // Clear all button
+const clearPaperHistory = document.getElementById("clearPaperHistory");
 
 function savePapers() {
     localStorage.setItem("papers", JSON.stringify(papers));
@@ -191,15 +190,13 @@ function displayPapers() {
 
     paperList.innerHTML = "";
 
-    // Added index parameter to track which item to delete
     papers.forEach((paper, index) => {
         const paperCard = document.createElement("div");
         paperCard.className = "paper-card";
         paperCard.style.display = "flex";
         paperCard.style.justifyContent = "space-between";
         paperCard.style.alignItems = "center";
-        
-        // Added single item delete button (✕)
+
         paperCard.innerHTML = `
             <div>
                 <strong>${paper.subject}</strong>
@@ -216,7 +213,6 @@ function displayPapers() {
     updateStudyStats();
 }
 
-// Event listener for adding a new paper
 if (savePaper) {
     savePaper.addEventListener("click", () => {
         const subject = paperSubject.value;
@@ -239,7 +235,6 @@ if (savePaper) {
     });
 }
 
-// Event listener for deleting a SINGLE paper item
 if (paperList) {
     paperList.addEventListener("click", (e) => {
         if (e.target.classList.contains("delete-paper-btn")) {
@@ -253,7 +248,6 @@ if (paperList) {
     });
 }
 
-// Event listener for CLEARING ALL paper history
 if (clearPaperHistory) {
     clearPaperHistory.addEventListener("click", () => {
         if (papers.length === 0) {
@@ -329,13 +323,13 @@ updateDailyProgress();
 
 // DYNAMIC GYM SCHEDULE WITH LOCALSTORAGE
 const defaultGymSchedule = {
-    1: "push", // Mon
-    2: "rest", // Tue
-    3: "pull", // Wed
-    4: "rest", // Thu
-    5: "legs", // Fri
-    6: "rest", // Sat
-    0: "rest"  // Sun
+    1: "push",
+    2: "rest",
+    3: "pull",
+    4: "rest",
+    5: "legs",
+    6: "rest",
+    0: "rest"
 };
 
 const workoutLabels = {
@@ -373,13 +367,12 @@ function populateScheduleDropdowns() {
     });
 }
 
-// Listen for schedule dropdown changes
 document.querySelectorAll(".schedule-select").forEach(select => {
     select.addEventListener("change", (e) => {
         const dayNum = e.target.id.replace("day-", "");
         const newWorkoutType = e.target.value;
         gymSchedule[dayNum] = newWorkoutType;
-        
+
         saveGymSchedule();
         updateGymSchedule();
 
@@ -414,8 +407,6 @@ const workoutPlans = {
     ]
 };
 
-// WORKOUT DISPLAY FUNCTION
-// MOTIVATIONAL QUOTES FOR REST DAYS
 const restQuotes = [
     "“Rest when you're weary. Refresh and renew yourself, your body, your mind, your spirit.”",
     "“Recovery is where the magic happens and your muscles actually grow.”",
@@ -424,7 +415,6 @@ const restQuotes = [
     "“Work hard, rest hard. Balance is key to long-term success.”"
 ];
 
-// WORKOUT DISPLAY FUNCTION WITH REST DAY SUPPORT
 function showWorkout(type) {
     const workoutList = document.getElementById("workoutList");
     const workoutTitle = document.getElementById("workoutTitle");
@@ -432,7 +422,6 @@ function showWorkout(type) {
 
     if (!workoutList) return;
 
-    // Handle REST DAY case
     if (type === "rest") {
         if (workoutTitle) workoutTitle.textContent = "Rest & Recovery Day";
         if (workoutSubtitle) workoutSubtitle.textContent = "Take time to stretch, hydrate, and recover.";
@@ -455,7 +444,6 @@ function showWorkout(type) {
         return;
     }
 
-    // Handle ACTIVE WORKOUT cases (Push, Pull, Legs)
     const workout = workoutPlans[type];
     if (!workout) return;
 
@@ -701,158 +689,35 @@ if (paper1Subject && paper2Subject) {
     showWorkout(todayWorkout);
 })();
 
-// FITNESS PAGE AEROBIC CONTROLLER
-(function initFitnessAerobics() {
-    let fitAerobicActivity = null;
-    let fitTimerSeconds = 25 * 60;
-    let fitTimerInterval = null;
-    let fitTimerRunning = false;
-
-    // 1. Quick option buttons selection
-    document.querySelectorAll(".fit-aerobic-option").forEach(button => {
-        button.addEventListener("click", () => {
-            document.querySelectorAll(".fit-aerobic-option").forEach(item => item.classList.remove("selected"));
-            button.classList.add("selected");
-            fitAerobicActivity = button.dataset.activity;
-        });
-    });
-
-    // 2. Log Cardio Session Button
-    const saveBtn = document.getElementById("fitSaveAerobic");
-    if (saveBtn) {
-        saveBtn.addEventListener("click", () => {
-            const manualActivity = document.getElementById("fitManualActivity")?.value.trim();
-            const durationInput = document.getElementById("fitManualDuration")?.value;
-            const duration = Number(durationInput);
-            const activity = manualActivity || fitAerobicActivity;
-
-            if (!activity || !duration) {
-                alert("Please select or type an activity and enter duration in minutes.");
-                return;
-            }
-
-            const statusElem = document.getElementById("fitAerobicStatus");
-            if (statusElem) {
-                statusElem.textContent = `✓ Logged: ${activity} for ${duration} mins`;
-            }
-
-            const aerobicRecord = { date: new Date().toISOString().split("T")[0], activity, duration };
-            localStorage.setItem("aerobicRecord", JSON.stringify(aerobicRecord));
-
-            alert(`Successfully logged ${activity} for ${duration} minutes!`);
-        });
-    }
-
-    // 3. Timer Display Update
-    const timerDisplay = document.getElementById("fitAerobicTimerDisplay");
-    const durationInput = document.getElementById("fitAerobicDuration");
-
-    function updateDisplay() {
-        const minutes = Math.floor(fitTimerSeconds / 60);
-        const seconds = fitTimerSeconds % 60;
-        if (timerDisplay) {
-            timerDisplay.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-        }
-    }
-
-    if (durationInput) {
-        durationInput.addEventListener("input", () => {
-            if (fitTimerRunning) return;
-            fitTimerSeconds = Math.max(1, Number(durationInput.value)) * 60;
-            updateDisplay();
-        });
-    }
-
-    // 4. Timer Controls
-    const startBtn = document.getElementById("fitStartAerobicTimer");
-    const pauseBtn = document.getElementById("fitPauseAerobicTimer");
-    const finishBtn = document.getElementById("fitFinishAerobicTimer");
-
-    if (startBtn) {
-        startBtn.addEventListener("click", () => {
-            if (fitTimerRunning) return;
-
-            const currentActivity = document.getElementById("fitManualActivity")?.value.trim() || fitAerobicActivity;
-
-            if (!currentActivity) {
-                alert("Please pick or type a cardio activity first!");
-                return;
-            }
-
-            fitTimerRunning = true;
-            fitTimerInterval = setInterval(() => {
-                if (fitTimerSeconds > 0) {
-                    fitTimerSeconds--;
-                    updateDisplay();
-                } else {
-                    clearInterval(fitTimerInterval);
-                    fitTimerRunning = false;
-                    alert("Cardio session complete! ♡");
-                }
-            }, 1000);
-        });
-    }
-
-    if (pauseBtn) {
-        pauseBtn.addEventListener("click", () => {
-            if (!fitTimerRunning) return;
-            clearInterval(fitTimerInterval);
-            fitTimerRunning = false;
-        });
-    }
-
-    if (finishBtn) {
-        finishBtn.addEventListener("click", () => {
-            clearInterval(fitTimerInterval);
-            fitTimerRunning = false;
-
-            const duration = Number(durationInput?.value) || 25;
-            const activity = document.getElementById("fitManualActivity")?.value.trim() || fitAerobicActivity || "Cardio";
-
-            const statusElem = document.getElementById("fitAerobicStatus");
-            if (statusElem) {
-                statusElem.textContent = `✓ ${activity} · ${duration} min completed`;
-            }
-
-            fitTimerSeconds = duration * 60;
-            updateDisplay();
-            alert("Session finished!");
-        });
-    }
-})();
 // AUTOMATIC DASHBOARD PROGRESS CALCULATOR
 function updateDashboardProgress() {
-    // 1. Calculate Study Progress (Paper 1 & Paper 2)
     const studyTasks = document.querySelectorAll('.task-card[data-task="paper1"], .task-card[data-task="paper2"]');
     const completedStudy = document.querySelectorAll('.task-card[data-task="paper1"].completed, .task-card[data-task="paper2"].completed');
-    
+
     const studyPercent = studyTasks.length > 0 ? Math.round((completedStudy.length / studyTasks.length) * 100) : 0;
-    
+
     const studyText = document.getElementById('studyProgressText');
     const studyFill = document.getElementById('studyProgressFill');
     if (studyText) studyText.textContent = `${studyPercent}%`;
     if (studyFill) studyFill.style.width = `${studyPercent}%`;
 
-    // 2. Calculate Fitness Progress (Gym & Aerobic)
     const fitnessTasks = document.querySelectorAll('.task-card[data-task="gym"], .task-card[data-task="aerobic"]');
     const completedFitness = document.querySelectorAll('.task-card[data-task="gym"].completed, .task-card[data-task="aerobic"].completed');
-    
+
     const fitnessPercent = fitnessTasks.length > 0 ? Math.round((completedFitness.length / fitnessTasks.length) * 100) : 0;
-    
+
     const fitnessText = document.getElementById('fitnessProgressText');
     const fitnessFill = document.getElementById('fitnessProgressFill');
     if (fitnessText) fitnessText.textContent = `${fitnessPercent}%`;
     if (fitnessFill) fitnessFill.style.width = `${fitnessPercent}%`;
 }
 
-// Watch for clicks on any complete button (✓)
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('complete-button')) {
         setTimeout(updateDashboardProgress, 50);
     }
 });
 
-// Run once when page loads
 updateDashboardProgress();
 
 // AUTO-CHECK DASHBOARD TASK WHEN FINISHED
@@ -860,38 +725,20 @@ function markTaskCompleted(taskName) {
     const taskCard = document.querySelector(`.task-card[data-task="${taskName}"]`);
     if (taskCard) {
         taskCard.classList.add('completed');
-        
-        // Recalculate progress bars automatically
         if (typeof updateDashboardProgress === 'function') {
             updateDashboardProgress();
         }
     }
 }
 
-// AUTO-CHECK DASHBOARD TASK WHEN FINISHED
-function markTaskCompleted(taskName) {
-    const taskCard = document.querySelector(`.task-card[data-task="${taskName}"]`);
-    if (taskCard) {
-        taskCard.classList.add('completed');
-        
-        // Recalculate progress bars automatically
-        if (typeof updateDashboardProgress === 'function') {
-            updateDashboardProgress();
-        }
-    }
-}
-
-// 1. When clicking "Finish" on the Aerobic timer
 document.getElementById('finishAerobicTimer')?.addEventListener('click', () => {
     markTaskCompleted('aerobic');
 });
 
-// 2. When clicking "Save aerobic" (Manual entry)
 document.getElementById('saveAerobic')?.addEventListener('click', () => {
     markTaskCompleted('aerobic');
 });
 
-// 3. When clicking "Finish" on the Main Timer Panel (Papers / Gym)
 document.getElementById('finishTimer')?.addEventListener('click', () => {
     const timerTaskTitle = document.getElementById('timerTask')?.textContent.toLowerCase() || '';
 
@@ -905,26 +752,24 @@ document.getElementById('finishTimer')?.addEventListener('click', () => {
         markTaskCompleted('aerobic');
     }
 });
-// When clicking "Finish Workout" in the Gym section
+
 document.getElementById('finishGymBtn')?.addEventListener('click', () => {
     markTaskCompleted('gym');
 });
+
 // --- AUTOMATIC 12 AM DAILY RESET & SAVING SYSTEM ---
 
-// 1. Check the date on startup and reset if it's a new day
 function loadAndCheckDailyReset() {
-    const todayDate = new Date().toDateString(); // Looks like "Wed Aug 12 2026"
+    const todayDate = new Date().toDateString();
     const savedDate = localStorage.getItem('lockin_last_date');
 
-    // If it's a new day (or first run), wipe yesterday's tasks
     if (savedDate !== todayDate) {
         localStorage.setItem('lockin_last_date', todayDate);
-        localStorage.removeItem('lockin_completed_tasks');
+        localStorage.removeItem('completedTasks');
     }
 
-    // Load today's saved tasks
-    const completedTasks = JSON.parse(localStorage.getItem('lockin_completed_tasks') || '[]');
-    
+    const completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '[]');
+
     document.querySelectorAll('.task-card').forEach(card => {
         const taskKey = card.getAttribute('data-task');
         if (completedTasks.includes(taskKey)) {
@@ -939,22 +784,19 @@ function loadAndCheckDailyReset() {
     }
 }
 
-// 2. Helper to save completed tasks for today
 function saveTodayProgress() {
     const completedKeys = [];
     document.querySelectorAll('.task-card.completed').forEach(card => {
         const taskKey = card.getAttribute('data-task');
         if (taskKey) completedKeys.push(taskKey);
     });
-    localStorage.setItem('lockin_completed_tasks', JSON.stringify(completedKeys));
+    localStorage.setItem('completedTasks', JSON.stringify(completedKeys));
 }
 
-// 3. Auto-save progress whenever a finish or checkmark button is clicked
 document.addEventListener('click', () => {
     setTimeout(() => {
         saveTodayProgress();
     }, 100);
 });
 
-// Run automatically every time you open or refresh the site
 loadAndCheckDailyReset();
