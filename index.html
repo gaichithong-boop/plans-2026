@@ -216,12 +216,13 @@
                     <label>
                         Subject
                         <select id="paperSubject">
-                            <option>Biology</option>
-                            <option>Chemistry</option>
-                            <option>Physics</option>
-                            <option>Mathematics</option>
-                            <option>Additional Mathematics</option>
-                            <option>English</option>
+                            <option value="">Choose subject</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Additional Mathematics">Additional Mathematics</option>
+                            <option value="English">English</option>
                         </select>
                     </label>
 
@@ -235,6 +236,38 @@
                         <input type="number" id="paperScore" min="0" max="100" placeholder="e.g. 84">
                     </label>
                 </div>
+
+                <h2 style="margin-top: 24px;">PYQ / PYP Code</h2>
+                <p class="subtitle" style="margin-bottom: 16px;">Pick your subject and paper details — the code builds itself.</p>
+                <div class="form-grid">
+                    <label>
+                        Paper number
+                        <select id="paperNo">
+                            <option value="">Choose paper</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Session
+                        <select id="paperSession">
+                            <option value="">Choose session</option>
+                            <option value="fm">fm (Feb/Mar)</option>
+                            <option value="mj">mj (May/Jun)</option>
+                            <option value="on">on (Oct/Nov)</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Year
+                        <select id="paperYear">
+                            <option value="">Choose year</option>
+                        </select>
+                    </label>
+                </div>
+
+                <p class="subtitle" style="margin-top: 14px;">
+                    Generated code: <strong id="generatedCode">—</strong>
+                </p>
 
                 <button class="save-paper" id="savePaper">Save paper</button>
             </div>
@@ -263,41 +296,6 @@
                         <button class="delete-single-paper" data-id="1" style="background: none; border: none; color: #a09890; cursor: pointer; font-size: 16px;">✕</button>
                     </div> 
                     -->
-                </div>
-            </div>
-              <!-- Study Panel -->
-            <div class="study-panel" id="studyPanel">
-                <div class="panel-heading">
-                    <p class="eyebrow">PAST-YEAR PAPERS</p>
-                    <h2>Today's papers</h2>
-                </div>
-
-                <div class="paper-selector">
-                    <label>
-                        Paper 1 subject
-                        <select id="paper1Subject">
-                            <option value="">Choose subject</option>
-                            <option>Biology</option>
-                            <option>Chemistry</option>
-                            <option>Physics</option>
-                            <option>Mathematics</option>
-                            <option>Add Maths</option>
-                            <option>English</option>
-                        </select>
-                    </label>
-
-                    <label>
-                        Paper 2 subject
-                        <select id="paper2Subject">
-                            <option value="">Choose subject</option>
-                            <option>Biology</option>
-                            <option>Chemistry</option>
-                            <option>Physics</option>
-                            <option>Mathematics</option>
-                            <option>Add Maths</option>
-                            <option>English</option>
-                        </select>
-                    </label>
                 </div>
             </div>
 
