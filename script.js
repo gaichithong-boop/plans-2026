@@ -141,6 +141,7 @@ navLinks.forEach(link => {
             showWorkout(todayWorkout);
         } else {
             document.getElementById("dashboard-page")?.classList.add("active-page");
+            history.replaceState(null, "", location.pathname);
         }
     });
 });
