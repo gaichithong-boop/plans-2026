@@ -141,7 +141,6 @@ navLinks.forEach(link => {
             showWorkout(todayWorkout);
         } else {
             document.getElementById("dashboard-page")?.classList.add("active-page");
-            history.replaceState(null, "", location.pathname);
         }
     });
 });
@@ -869,6 +868,18 @@ function markTaskCompleted(taskName) {
     }
 }
 
+// AUTO-CHECK DASHBOARD TASK WHEN FINISHED
+function markTaskCompleted(taskName) {
+    const taskCard = document.querySelector(`.task-card[data-task="${taskName}"]`);
+    if (taskCard) {
+        taskCard.classList.add('completed');
+        
+        // Recalculate progress bars automatically
+        if (typeof updateDashboardProgress === 'function') {
+            updateDashboardProgress();
+        }
+    }
+}
 
 // 1. When clicking "Finish" on the Aerobic timer
 document.getElementById('finishAerobicTimer')?.addEventListener('click', () => {
