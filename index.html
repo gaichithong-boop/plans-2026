@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plans 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -18,10 +20,13 @@
             <a href="#fitness" class="nav-link">Fitness</a>
             <a href="#nutrition" class="nav-link">Nutrition</a>
             <a href="#money" class="nav-link">Money</a>
+            <a href="#calendar" class="nav-link">Calendar</a>
+
         </nav>
 
       <!-- DASHBOARD PAGE -->
-<div class="page active-page" id="dashboard-page">
+<div class="page active-page dashboard-page" id="dashboard-page">
+
 
     <header class="header">
         <div>
@@ -152,20 +157,19 @@
 
  <!-- Bottom Info Cards (Only inside Dashboard) -->
 <section id="dashboardBottomGrid" class="bottom-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 24px;">
+   <div class="info-card upcoming-card">
+    <span class="card-label">⏰ UPCOMING</span>
+    <h2>What's next</h2>
+    <ul id="upcomingList" class="upcoming-list"></ul>
+    <button id="openCalendarLink">Open calendar →</button>
+</div>
+
     <div class="info-card">
-        <span class="card-label">🥗 NUTRITION</span>
-        <h2>Daily balance</h2>
-        <p>Keep track of the foods and nutrients you had today.</p>
-        <button>Open nutrition →</button>
-    </div>
-
-            <div class="info-card">
         <span class="card-label">⚠️ MISSED GOALS</span>
-        <h2 id="missedGoalsTitle">You're all clear</h2>
-        <div id="missedGoalsList"></div>
+        <h2 id="missedGoalsTitle"></h2>
+<p id="missedGoalsReminder" class="missed-reminder"></p>
+<ul id="missedGoalsList" class="missed-list"></ul>
     </div>
-
-
 </section>
 
             <!-- Timer Panel -->
@@ -432,9 +436,131 @@
 
                 <p class="aerobic-status" id="aerobicStatus">Nothing recorded today.</p>
             </div>
+        </section>
 
+        <!-- NUTRITION PAGE -->
+        <section class="page" id="nutrition-page">
+            <div class="page-heading">
+                <p class="eyebrow">YOUR NUTRITION</p>
+                <h1>Today's balance</h1>
+                <p class="subtitle">Small wins, every day.</p>
+            </div>
+
+            <!-- Water -->
+            <div class="study-form" style="margin-bottom: 24px;">
+                <h2>Water 💧</h2>
+                <p class="subtitle" style="margin-bottom: 18px;">Goal: 2000ml (1000ml × 2). Tap a bottle to fill it.</p>
+                <div id="waterBottles" style="display: flex; gap: 16px; margin-bottom: 12px;">
+                    <button class="bottle" data-index="0" type="button" aria-label="Bottle 1">🥛</button>
+                    <button class="bottle" data-index="1" type="button" aria-label="Bottle 2">🥛</button>
+                </div>
+                <p id="waterStatus" class="subtitle">0 / 2000ml</p>
+            </div>
+
+            <!-- Nutrients -->
+            <div class="study-form" style="margin-bottom: 24px;">
+                <h2>Nutrients 🥗</h2>
+                <p class="subtitle" style="margin-bottom: 18px;">No targets — just tick what you've had today.</p>
+                <div id="nutrientsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
+                    <!-- buttons injected by JS -->
+                </div>
+                <p id="nutrientsStatus" class="subtitle" style="margin-top: 14px;">0 of 7 covered</p>
+            </div>
+
+            <!-- Snacks / Treats -->
+            <div class="study-form" style="margin-bottom: 24px;">
+                <h2>Snacks &amp; treats 🍫</h2>
+                <p class="subtitle" style="margin-bottom: 14px;">Enjoy, just keep it mindful 🌿</p>
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <input type="text" id="snackInput" placeholder="e.g. 烤鱼, McD, 巧克力" style="flex: 1; border: 1px solid #e8e0db; background: #faf7f4; padding: 11px; border-radius: 10px; color: #514944; font-size: 14px;">
+                    <button type="button" id="addSnack" class="save-paper">Save</button>
+                </div>
+                <div id="snacksList"></div>
+            </div>
+
+            <!-- History -->
+            <div class="paper-history">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">HISTORY</p>
+                        <h2>Last 30 days</h2>
+                    </div>
+                </div>
+                <div id="nutritionHistory">
+                    <p class="empty-message">No history yet — start drinking water and ticking nutrients!</p>
+                </div>
+            </div>
+        </section>
+<!-- ============================== -->
+<!-- CALENDAR PAGE                 -->
+<!-- ============================== -->
+<section class="page" id="calendar-page">
+    <div class="page-heading">
+        <span class="eyebrow">PLANS 2026</span>
+        <h1>Calendar & Countdown</h1>
+        <p class="subtitle">Things coming up — exams, deadlines, repeats.</p>
+    </div>
+
+    <!-- MONTH NAVIGATOR + GRID -->
+    <div class="calendar-widget">
+        <div class="calendar-header">
+            <button id="prevMonth" class="cal-nav-btn">◀</button>
+            <div class="calendar-month-label" id="calendarMonthLabel">November 2026</div>
+            <button id="nextMonth" class="cal-nav-btn">▶</button>
+        </div>
+        <div class="calendar-weekdays">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <!-- ADD EVENT BUTTON -->
+    <div class="calendar-add-bar">
+        <button id="showAddEvent" class="add-button">+ Add event</button>
+    </div>
+
+    <!-- ADD/EDIT EVENT FORM -->
+    <div id="eventForm" class="event-form" style="display: none;">
+        <h2 id="eventFormTitle">New event</h2>
+        <div class="form-grid">
+            <label>
+                Title
+                <input type="text" id="eventTitleInput" placeholder="e.g. dinner">
+            </label>
+            <label>
+                Date
+                <input type="date" id="eventDateInput">
+            </label>
+            <label>
+                Repeat
+                <select id="eventRepeatInput">
+                    <option value="none">Once</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+            </label>
+        </div>
+        <label class="event-notes-label">
+            Notes (optional)
+            <input type="text" id="eventNotesInput" placeholder="e.g. wear black">
+        </label>
+        <div class="event-form-actions">
+            <button id="saveEvent" class="save-paper">Save</button>
+            <button id="cancelEvent" class="add-button">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SELECTED-DAY DETAIL -->
+    <div class="selected-day-section">
+        <h2 id="selectedDayHeading">Pick a day</h2>
+        <div id="eventList" class="event-list"></div>
+    </div>
+</section>
+
+
+    </main>
 
     <script src="script.js"></script>
 </body>
 </html>
-
